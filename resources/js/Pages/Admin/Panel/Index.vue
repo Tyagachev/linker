@@ -1,10 +1,16 @@
 <template>
-$END$
+    <AuthenticatedLayout>
+        <div>Админка</div>
+    </AuthenticatedLayout>
+
 </template>
 
 <script>
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
+
 export default {
-name: "Index"
+    name: "Index",
+    components: {AuthenticatedLayout}
 }
 </script>
 

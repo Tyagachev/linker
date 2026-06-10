@@ -21,7 +21,8 @@ class RegisteredUserController extends Controller
      */
     public function create(): Response
     {
-        return Inertia::render('Auth/Register');
+        $component = 'Auth/Register';
+        return Inertia::render($component, []);
     }
 
     /**
@@ -37,11 +38,16 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        $user = User::create([
+        $firstUser = User::query()->count() === 0;
+        $role = $firstUser ? 'admin' : 'user';
+
+        $user = User::query()->create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
+
+        $user->role()->create(['role' => $role]);
 
         event(new Registered($user));
 
