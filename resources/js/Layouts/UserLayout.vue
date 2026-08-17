@@ -56,11 +56,11 @@ export default {
                       name: 'salons.index',
                       image: '<i class="fa-solid fa-book-open"></i>'
                   },
-                  /*{
-                      title: 'Отчет',
-                      name: 'orders.index',
+                  {
+                      title: 'Регионы',
+                      name: 'regions.index',
                       image: '<i class="fa-solid fa-layer-group"></i>'
-                  },*/
+                  },
               ]
           },
       }

@@ -9,13 +9,18 @@ export default {
     name: "Index",
     components: {SecondaryButton, InputLabel, TextInput, PrimaryButton, UserLayout},
     props: {
+        regions: {
+            type: Array,
+            default: () => []
+        },
         salons: Array,
-        default: []
+        default: () => []
     },
     data() {
         return {
             name: '',
-            showNameInput: false
+            showNameInput: false,
+            region: null
         }
     },
     methods: {
@@ -24,7 +29,8 @@ export default {
         },
         storeSalon() {
             this.$inertia.post(route('salons.store'), {
-                name: this.name
+                name: this.name,
+                region: this.region.name
             })
             this.name = '';
             this.showNameInput = !this.showNameInput
@@ -42,17 +48,55 @@ export default {
 
             <h1 class="text-black">Список салонов</h1>
             <PrimaryButton @click.prevent="toggleShowNameInput">Добавить салон</PrimaryButton>
-            <div v-show="showNameInput">
-                <div class="mt-4">
-                    <InputLabel>Название салона (от 3х символов)</InputLabel>
-                    <TextInput class="w-full required" v-model="name">saaas</TextInput>
-                    <SecondaryButton v-if="name.length > 3" @click.prevent="storeSalon" class="mt-2">Сохранить</SecondaryButton>
-                </div>
+            <div class="flex gap-2">
+
             </div>
-            <div v-for="salon in salons">
+            <div v-show="showNameInput" class="mt-4">
+                <InputLabel>Название салона (от 3х символов)</InputLabel>
+
+                <div class="flex gap-2">
+                    <select
+                        v-model="region"
+                        class="w-1/3 rounded-md border-gray-300 shadow-sm"
+                    >
+                        <option :value="null" disabled>
+                            Выберите регион
+                        </option>
+
+                        <option
+                            v-for="item in regions"
+                            :key="item.id"
+                            :value="item"
+                        >
+                            {{ item.name }}
+                        </option>
+                    </select>
+
+                    <TextInput
+                        v-model="name"
+                        class="flex-1"
+                        placeholder="Название салона"
+                    />
+                </div>
+
+                <SecondaryButton
+                    v-if="name.length >= 3 && region"
+                    @click.prevent="storeSalon"
+                    class="mt-2"
+                >
+                    Сохранить
+                </SecondaryButton>
+            </div>
+            <div v-show="!showNameInput" v-for="salon in salons">
                 <div class="p-1 flex justify-between mt-2 rounded-md border border-gray-300">
-                    <div>
-                        <p class="text-sm text-black">{{ salon.name }}</p>
+                    <div class="flex">
+                        <div>
+                            <p class="text-sm text-black mx-3">{{ salon.region }}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-black">{{ salon.name }}</p>
+                        </div>
+
                     </div>
                     <div>
                         <a @click.prevent="deleteSalon(salon)" class="block text-sm text-red-400 hover:text-red-500">Удалить</a>

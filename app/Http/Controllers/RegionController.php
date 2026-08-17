@@ -3,11 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Region;
-use App\Models\Salon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
-class SalonController extends Controller
+class RegionController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,10 +15,7 @@ class SalonController extends Controller
     {
         $regions = Region::query()->orderBy('created_at', 'desc')
             ->get();
-
-        $salons = Salon::query() ->orderBy('created_at', 'desc')
-            ->get();
-        return Inertia::render('Salon/Index', compact('regions','salons'));
+        return Inertia::render('Region/Index', compact('regions'));
     }
 
     /**
@@ -36,19 +32,15 @@ class SalonController extends Controller
     public function store(Request $request)
     {
         $name = $request->input('name');
-        $region = $request->input('region');
-        Salon::query()
-            ->create([
-                'name' => $name,
-                'region' => $region
-            ]);
+        Region::query()
+            ->create(['name' => $name]);
         return redirect()->back();
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Region $region)
     {
         //
     }
@@ -56,7 +48,7 @@ class SalonController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Region $region)
     {
         //
     }
@@ -64,7 +56,7 @@ class SalonController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Region $region)
     {
         //
     }
@@ -72,9 +64,9 @@ class SalonController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Salon $salon)
+    public function destroy(Region $region)
     {
-        $salon->delete();
+        $region->delete();
         return redirect()->back();
     }
 }

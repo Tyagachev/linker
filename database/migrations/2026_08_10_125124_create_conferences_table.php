@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('title');
             $table->mediumText('link');
             $table->boolean('active')->default(true);
+            $table->dateTime('scheduled_date');
+            $table->dateTime('deadline_at');
             $table->timestamps();
         });
     }

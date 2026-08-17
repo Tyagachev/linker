@@ -27,6 +27,7 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'admin'])->group(function () {
    Route::get('/admin', [\App\Http\Controllers\Admin\AdminController::class, 'index'])->name('admin.index');
 });
+
 /**
  * Конференции
  */
@@ -40,6 +41,8 @@ Route::middleware('auth')->group(function () {
 });
 Route::get('/conferences/{conference}', [\App\Http\Controllers\ConferenceController::class, 'show'])->name('conferences.show');
 
+Route::resource('/regions', \App\Http\Controllers\RegionController::class);
+
 Route::middleware('auth')->group(function () {
     Route::get('/salons', [\App\Http\Controllers\SalonController::class, 'index'])->name('salons.index');
     Route::post('/salons', [\App\Http\Controllers\SalonController::class, 'store'])->name('salons.store');
@@ -49,5 +52,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/salons/{salon}', [\App\Http\Controllers\SalonController::class, 'destroy'])->name('salons.destroy');
 });
 Route::get('/salons/{salon}', [\App\Http\Controllers\SalonController::class, 'show'])->name('salons.show');
+
+
+Route::post('/conferences/salon', [\App\Http\Controllers\ConferenceSalonController::class, 'store'])
+    ->name('conferences.salon.store');
 
 require __DIR__.'/auth.php';

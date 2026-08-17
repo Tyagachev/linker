@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('conference_id')->constrained('conferences')->onDelete('cascade');
             $table->foreignId('salon_id')->constrained('salons')->onDelete('cascade');
-            $table->string('token')->unique();
+            $table->uuid('visitor_token')->unique();
             $table->timestamps();
         });
     }
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('salons');
+        Schema::dropIfExists('conference_salon');
     }
 };

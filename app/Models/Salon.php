@@ -13,6 +13,11 @@ class Salon extends Model
     {
         return $this->belongsToMany(Conference::class, 'conference_salon')
             ->withPivot('token')
-            ->withTimestamps();;
+            ->withTimestamps();
+    }
+
+    public function conferenceAttendances()
+    {
+        return $this->hasMany(ConferenceSalon::class);
     }
 }

@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ConferenceResource;
 use App\Models\Conference;
+use App\Models\Salon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -13,8 +15,12 @@ class ConferenceController extends Controller
      */
     public function index()
     {
-        $conferences = Conference::all();
-        return Inertia::render('Conference/Index', compact('conferences'));
+        $conferences = Conference::query()
+            ->orderBy('created_at', 'desc')
+            ->get();
+        return Inertia::render('Conference/Index', [
+            'conferences' => ConferenceResource::collection($conferences)->resolve()
+        ]);
     }
 
     /**
@@ -30,11 +36,22 @@ class ConferenceController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'title' => ['required', 'string', 'min:3'],
+            'link' => ['required', 'url'],
+            'scheduledDate' => ['required', 'date'],
+            'deadlineAt' => ['required', 'date', 'after_or_equal:scheduledDate'],
+            'active' => ['boolean'],
+        ]);
+
         Conference::query()->create([
             'title' => $request->input('title'),
+            'scheduled_date' => $request->input('scheduledDate'),
+            'deadline_at' => $request->input('deadlineAt'),
             'link' => $request->input('link'),
             'active' => $request->input('active'),
         ]);
+
         return redirect()->back();
     }
 
@@ -43,7 +60,9 @@ class ConferenceController extends Controller
      */
     public function show(Conference $conference)
     {
-        //
+        $salons = Salon::query()->orderBy('name', 'asc')->get();
+        $conference = ConferenceResource::make($conference)->resolve();
+        return Inertia::render('Conference/Show', compact('conference', 'salons'));
     }
 
     /**
