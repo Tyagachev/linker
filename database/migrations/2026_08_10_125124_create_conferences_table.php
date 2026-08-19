@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('conferences', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+            $table->string('comment')->nullable();
             $table->mediumText('link');
             $table->boolean('active')->default(true);
             $table->dateTime('scheduled_date');

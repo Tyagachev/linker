@@ -77,4 +77,17 @@ class SalonController extends Controller
         $salon->delete();
         return redirect()->back();
     }
+
+    /*public function searchSalon(Request $request): JsonResponse
+    {
+        $request->input('query');
+        $salons = Salon::query()
+            ->where('name', 'like', '%' . $request->input('query') . '%')
+            ->limit(15)->get();
+
+        if (count($salons)) {
+            return response()->json(['res' => SalonResource::collection($salons)->resolve()]);
+        }
+        return response()->json(['res' => 'Совпадения не найдены']);
+    }*/
 }

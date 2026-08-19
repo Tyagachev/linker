@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\ConferenceResource;
 use App\Models\Conference;
 use App\Models\Salon;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -13,13 +14,27 @@ class ConferenceController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $conferences = Conference::query()
-            ->orderBy('created_at', 'desc')
+        $tab = $request->input('tab', 'upcoming');
+
+        $query = Conference::query();
+
+        if ($tab === 'past') {
+            $query->where('scheduled_date', '<', Carbon::today());
+        } else {
+            $tab = 'upcoming';
+
+            $query->where('scheduled_date', '>=', Carbon::today());
+        }
+
+        $conferences = $query
+            ->orderBy('scheduled_date', 'desc')
             ->get();
+
         return Inertia::render('Conference/Index', [
-            'conferences' => ConferenceResource::collection($conferences)->resolve()
+            'conferences' => ConferenceResource::collection($conferences)->resolve(),
+            'activeTab' => $tab,
         ]);
     }
 
@@ -39,6 +54,7 @@ class ConferenceController extends Controller
         $request->validate([
             'title' => ['required', 'string', 'min:3'],
             'link' => ['required', 'url'],
+            'comment' => ['nullable', 'string'],
             'scheduledDate' => ['required', 'date'],
             'deadlineAt' => ['required', 'date', 'after_or_equal:scheduledDate'],
             'active' => ['boolean'],
@@ -46,6 +62,7 @@ class ConferenceController extends Controller
 
         Conference::query()->create([
             'title' => $request->input('title'),
+            'comment' => $request->input('comment'),
             'scheduled_date' => $request->input('scheduledDate'),
             'deadline_at' => $request->input('deadlineAt'),
             'link' => $request->input('link'),
@@ -60,7 +77,7 @@ class ConferenceController extends Controller
      */
     public function show(Conference $conference)
     {
-        $salons = Salon::query()->orderBy('name', 'asc')->get();
+        $salons = Salon::query()->orderBy('region', 'asc')->get();
         $conference = ConferenceResource::make($conference)->resolve();
         return Inertia::render('Conference/Show', compact('conference', 'salons'));
     }

@@ -28,7 +28,8 @@ export default {
             visitorToken: null,
             tokenExpiresAt: null,
 
-            loading: false
+            loading: false,
+            result: null
         };
     },
 
@@ -147,6 +148,31 @@ export default {
                 this.isOpen = false;
             }, 200);
         },
+        preparationQueryString() {
+
+            clearTimeout(this.debounceTimer);
+
+            const query = this.searchQuery.trim().toLowerCase();
+
+            if (query.length < 2) return;
+            this.debounceTimer = setTimeout(() => {
+                this.searchToDatabase(query);
+            }, 500);
+        },
+        async searchToDatabase(query) {
+            try {
+                const { data } = await axios.get('/salons/search', {
+                    params: { query: query }
+                });
+                if (typeof data.res !== "object") {
+                    this.message = data.res;
+                } else {
+                    this.result = data.res;
+                }
+            } catch (error) {
+                this.error = error
+            }
+        },
 
         /**
          * Вход в конференцию
@@ -222,7 +248,7 @@ export default {
             </div>
 
             <!-- Вход -->
-            <div class="text-center mb-6">
+            <div v-show="selectedSalon" class="text-center mb-6">
 
                 <PrimaryButton
                     :disabled="!selectedSalon || loading"

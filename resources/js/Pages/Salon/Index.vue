@@ -46,63 +46,208 @@ export default {
     <UserLayout>
         <template #content>
 
-            <h1 class="text-black">Список салонов</h1>
-            <PrimaryButton @click.prevent="toggleShowNameInput">Добавить салон</PrimaryButton>
-            <div class="flex gap-2">
+            <!-- Заголовок -->
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
+
+                <div>
+                    <h1 class="text-2xl font-semibold text-gray-800">
+                        Салоны
+                    </h1>
+
+                    <p class="mt-1 text-sm text-gray-500">
+                        Управление салонами и их регионами
+                    </p>
+                </div>
+
+                <PrimaryButton @click.prevent="toggleShowNameInput">
+                    {{ showNameInput ? 'Отмена' : '+ Добавить салон' }}
+                </PrimaryButton>
 
             </div>
-            <div v-show="showNameInput" class="mt-4">
-                <InputLabel>Название салона (от 3х символов)</InputLabel>
 
-                <div class="flex gap-2">
-                    <select
-                        v-model="region"
-                        class="w-1/3 rounded-md border-gray-300 shadow-sm"
-                    >
-                        <option :value="null" disabled>
-                            Выберите регион
-                        </option>
 
-                        <option
-                            v-for="item in regions"
-                            :key="item.id"
-                            :value="item"
+            <!-- Форма создания -->
+            <div
+                v-show="showNameInput"
+                class="mb-6 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm"
+            >
+
+                <div class="border-b border-gray-100 px-5 py-4">
+
+                    <h2 class="font-semibold text-gray-800">
+                        Новый салон
+                    </h2>
+
+                    <p class="mt-1 text-sm text-gray-500">
+                        Выберите регион и укажите название салона
+                    </p>
+
+                </div>
+
+
+                <div class="p-5">
+
+                    <InputLabel>
+                        Регион и название салона
+                    </InputLabel>
+
+
+                    <div class="mt-1 grid grid-cols-1 gap-3 sm:grid-cols-3">
+
+                        <select
+                            v-model="region"
+                            class="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:col-span-1"
                         >
-                            {{ item.name }}
-                        </option>
-                    </select>
 
-                    <TextInput
-                        v-model="name"
-                        class="flex-1"
-                        placeholder="Название салона"
-                    />
+                            <option
+                                :value="null"
+                                disabled
+                            >
+                                Выберите регион
+                            </option>
+
+                            <option
+                                v-for="item in regions"
+                                :key="item.id"
+                                :value="item"
+                            >
+                                {{ item.name }}
+                            </option>
+
+                        </select>
+
+
+                        <TextInput
+                            v-model="name"
+                            class="sm:col-span-2"
+                            placeholder="Название салона"
+                        />
+
+                    </div>
+
+
+                    <div class="mt-4 flex justify-end">
+
+                        <SecondaryButton
+                            v-if="name.trim().length >= 3 && region"
+                            @click.prevent="storeSalon"
+                        >
+                            Сохранить
+                        </SecondaryButton>
+
+                    </div>
+
                 </div>
 
-                <SecondaryButton
-                    v-if="name.length >= 3 && region"
-                    @click.prevent="storeSalon"
-                    class="mt-2"
+            </div>
+
+
+            <!-- Список салонов -->
+            <div
+                v-show="!showNameInput"
+                class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm"
+            >
+
+                <!-- Заголовок -->
+                <div
+                    class="hidden sm:grid grid-cols-[180px_1fr_auto] gap-4 border-b border-gray-200 bg-gray-50 px-5 py-3 text-xs font-semibold uppercase tracking-wide text-gray-500"
                 >
-                    Сохранить
-                </SecondaryButton>
-            </div>
-            <div v-show="!showNameInput" v-for="salon in salons">
-                <div class="p-1 flex justify-between mt-2 rounded-md border border-gray-300">
-                    <div class="flex">
-                        <div>
-                            <p class="text-sm text-black mx-3">{{ salon.region }}</p>
+
+                    <span>
+                        Регион
+                    </span>
+
+                    <span>
+                        Салон
+                    </span>
+
+                    <span>
+                        Действия
+                    </span>
+
+                </div>
+
+
+                <!-- Салоны -->
+                <div
+                    v-for="salon in salons"
+                    :key="salon.id"
+                    class="grid grid-cols-1 gap-3 border-b border-gray-100 px-5 py-4 last:border-b-0 sm:grid-cols-[180px_1fr_auto] sm:items-center"
+                >
+
+                    <!-- Регион -->
+                    <div>
+
+                        <span
+                            class="inline-flex items-center rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700"
+                        >
+                            {{ salon.region }}
+                        </span>
+
+                    </div>
+
+
+                    <!-- Название -->
+                    <div class="flex items-center gap-3">
+
+                        <div
+                            class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gray-100 text-gray-600"
+                        >
+                            🏢
                         </div>
+
                         <div>
-                            <p class="text-sm text-black">{{ salon.name }}</p>
+
+                            <p class="font-medium text-gray-800">
+                                {{ salon.name }}
+                            </p>
+
+                            <p class="text-xs text-gray-400">
+                                Салон #{{ salon.id }}
+                            </p>
+
                         </div>
 
                     </div>
-                    <div>
-                        <a @click.prevent="deleteSalon(salon)" class="block text-sm text-red-400 hover:text-red-500">Удалить</a>
+
+
+                    <!-- Удаление -->
+                    <div class="flex justify-end">
+
+                        <button
+                            @click.prevent="deleteSalon(salon)"
+                            class="rounded-md px-3 py-1.5 text-sm text-red-500 transition hover:bg-red-50 hover:text-red-700"
+                        >
+                            Удалить
+                        </button>
+
                     </div>
+
                 </div>
+
+
+                <!-- Пусто -->
+                <div
+                    v-if="!salons.length"
+                    class="px-5 py-10 text-center"
+                >
+
+                    <div class="mb-3 text-4xl">
+                        🏢
+                    </div>
+
+                    <p class="font-medium text-gray-700">
+                        Салонов пока нет
+                    </p>
+
+                    <p class="mt-1 text-sm text-gray-500">
+                        Добавьте первый салон
+                    </p>
+
+                </div>
+
             </div>
+
         </template>
     </UserLayout>
 </template>

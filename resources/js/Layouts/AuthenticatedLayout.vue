@@ -22,7 +22,7 @@ const showingNavigationDropdown = ref(false);
                         <div class="flex">
                             <!-- Logo -->
                             <div class="flex shrink-0 items-center">
-                                <Link :href="route('dashboard')">
+                                <Link :href="route('conferences.index')">
                                     <ApplicationLogo
                                         class="block h-9 w-auto fill-current text-gray-800"
                                     />
@@ -34,8 +34,8 @@ const showingNavigationDropdown = ref(false);
                                 class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex"
                             >
                                 <NavLink
-                                    :href="route('dashboard')"
-                                    :active="route().current('dashboard')"
+                                    :href="route('conferences.index')"
+                                    :active="route().current('conferences.index')"
                                 >
                                     Dashboard
                                 </NavLink>
@@ -74,14 +74,14 @@ const showingNavigationDropdown = ref(false);
                                         <DropdownLink
                                             :href="route('profile.edit')"
                                         >
-                                            Profile
+                                            Профиль
                                         </DropdownLink>
                                         <DropdownLink
                                             :href="route('logout')"
                                             method="post"
                                             as="button"
                                         >
-                                            Log Out
+                                            Выход
                                         </DropdownLink>
                                     </template>
                                 </Dropdown>
@@ -92,8 +92,7 @@ const showingNavigationDropdown = ref(false);
                         <div class="-me-2 flex items-center sm:hidden">
                             <button
                                 @click="
-                                    showingNavigationDropdown =
-                                        !showingNavigationDropdown
+                                    showingNavigationDropdown = !showingNavigationDropdown
                                 "
                                 class="inline-flex items-center justify-center rounded-md p-2 text-gray-400 transition duration-150 ease-in-out hover:bg-gray-100 hover:text-gray-500 focus:bg-gray-100 focus:text-gray-500 focus:outline-none"
                             >
@@ -141,8 +140,8 @@ const showingNavigationDropdown = ref(false);
                 >
                     <div class="space-y-1 pb-3 pt-2">
                         <ResponsiveNavLink
-                            :href="route('dashboard')"
-                            :active="route().current('dashboard')"
+                            :href="route('conferences.index')"
+                            :active="route().current('conferences.index')"
                         >
                             Dashboard
                         </ResponsiveNavLink>
@@ -172,7 +171,7 @@ const showingNavigationDropdown = ref(false);
                                 method="post"
                                 as="button"
                             >
-                                Log Out
+                                Выход
                             </ResponsiveNavLink>
                         </div>
                     </div>

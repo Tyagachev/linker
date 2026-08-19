@@ -3,7 +3,7 @@
         <div class="py-4">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <!-- Фиксируем высоту карточки, например 500px или 70vh -->
-                <div class="overflow-hidden shadow-sm sm:rounded-lg flex flex-col">
+                <div class="overflow-hidden  flex flex-col">
                     <div class="p-1 flex-1 min-h-0">
                         <!-- flex-1 + min-h-0 позволяют внутренним колонкам скроллиться -->
                         <div class="flex flex-col md:flex-row gap-6">
@@ -15,7 +15,7 @@
                                 </div>
                                 <slot name="sidebar">
                                     <!--РОУТЫ ЮЗЕРА-->
-                                    <div>
+                                    <div class="rounded-md bg-neutral-900">
                                         <UserRoute v-for="link in usr.links" :link="link"/>
                                     </div>
                                 </slot>
@@ -59,6 +59,11 @@ export default {
                   {
                       title: 'Регионы',
                       name: 'regions.index',
+                      image: '<i class="fa-solid fa-layer-group"></i>'
+                  },
+                  {
+                      title: 'Статистика',
+                      name: 'conferences.statistics.index',
                       image: '<i class="fa-solid fa-layer-group"></i>'
                   },
               ]

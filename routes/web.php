@@ -1,18 +1,23 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', function () {
+/*Route::get('/', function () {
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
     ]);
+});*/
+
+Route::get('/', function () {
+    return Inertia::render('Auth/Login', []);
 });
+
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard', []);
@@ -24,8 +29,19 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::middleware(['auth', 'admin'])->group(function () {
+/*Route::middleware(['auth', 'admin'])->group(function () {
    Route::get('/admin', [\App\Http\Controllers\Admin\AdminController::class, 'index'])->name('admin.index');
+});*/
+
+/**
+ * Статистика
+ */
+Route::middleware('auth')->group(function () {
+    Route::get('/conferences/statistics', [\App\Http\Controllers\ConferenceStatisticsController::class, 'index'])
+        ->name('conferences.statistics.index');
+
+    Route::get('/conferences/statistics/{current}/{last}', [\App\Http\Controllers\ConferenceStatisticsController::class, 'show'])
+        ->name('conferences.statistics.show');
 });
 
 /**
@@ -39,9 +55,8 @@ Route::middleware('auth')->group(function () {
     Route::put('/conferences/update', [\App\Http\Controllers\ConferenceController::class, 'update'])->name('conferences.update');
     Route::delete('/conferences/{conference}', [\App\Http\Controllers\ConferenceController::class, 'destroy'])->name('conferences.destroy');
 });
-Route::get('/conferences/{conference}', [\App\Http\Controllers\ConferenceController::class, 'show'])->name('conferences.show');
-
-Route::resource('/regions', \App\Http\Controllers\RegionController::class);
+Route::get('/conferences/{conference}', [\App\Http\Controllers\ConferenceController::class, 'show'])
+    ->name('conferences.show')->middleware('is_active');
 
 Route::middleware('auth')->group(function () {
     Route::get('/salons', [\App\Http\Controllers\SalonController::class, 'index'])->name('salons.index');
@@ -50,11 +65,30 @@ Route::middleware('auth')->group(function () {
     Route::get('/salons/edit', [\App\Http\Controllers\SalonController::class, 'edit'])->name('salons.edit');
     Route::put('/salons/update', [\App\Http\Controllers\SalonController::class, 'update'])->name('salons.update');
     Route::delete('/salons/{salon}', [\App\Http\Controllers\SalonController::class, 'destroy'])->name('salons.destroy');
+    //Route::get('/salons/{salon}', [\App\Http\Controllers\SalonController::class, 'show'])->name('salons.show');
 });
-Route::get('/salons/{salon}', [\App\Http\Controllers\SalonController::class, 'show'])->name('salons.show');
-
+//Route::get('/salons/search', [\App\Http\Controllers\SalonController::class, 'search'])->name('salons.search');
 
 Route::post('/conferences/salon', [\App\Http\Controllers\ConferenceSalonController::class, 'store'])
     ->name('conferences.salon.store');
+
+Route::resource('/regions', \App\Http\Controllers\RegionController::class)
+    ->middleware('auth');
+
+Route::get('/full-setup', function () {
+    Artisan::call('migrate', [
+        '--path' => 'database/migrations',
+        '--database' => env('DB_DATABASE'),
+        '--force' => true,
+        '--seed' => true,
+    ]);
+
+    Artisan::call('key:generate');
+    Artisan::call('config:cache');
+    Artisan::call('route:cache');
+    Artisan::call('view:cache');
+
+    return 'Full setup completed';
+});
 
 require __DIR__.'/auth.php';

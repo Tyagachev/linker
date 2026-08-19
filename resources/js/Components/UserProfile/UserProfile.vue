@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="p-2 hover:bg-neutral-800 mb-2 bg-neutral-900 flex items-center size-15 w-full">
+        <div class="p-2 hover:bg-neutral-800 mb-2 bg-neutral-900 rounded-md flex items-center size-15 w-full">
             <div>
                 <div class="avatar rounded-full border border-neutral-900 flex-shrink-0 grid place-items-center text-slate-900 font-bold"
                      :style="{ background: avatarColor(name) }">

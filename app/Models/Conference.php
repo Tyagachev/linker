@@ -36,9 +36,11 @@ class Conference extends Model
         return $this->scheduled_date->translatedFormat('d F Y');
     }
 
-    public function getFormattedDeadlineAtAttribute(): string
+    public function getFormattedDeadlineAtAttribute(): ?string
     {
-        return $this->deadline_at->translatedFormat('d F Y');
+        return $this->deadline_at
+            ? $this->deadline_at->format('d.m.Y H:i')
+            : null;
     }
 
     public function attendances()
@@ -46,10 +48,10 @@ class Conference extends Model
         return $this->hasMany(ConferenceSalon::class);
     }
 
-    public function salons(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function salons()
     {
         return $this->belongsToMany(Salon::class, 'conference_salon')
-            ->withPivot('token')
+            ->withPivot('visitor_token')
             ->withTimestamps();
     }
 }

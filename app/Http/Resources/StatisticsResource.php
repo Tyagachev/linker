@@ -1,11 +1,10 @@
 <?php
 
 namespace App\Http\Resources;
-
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ConferenceResource extends JsonResource
+class StatisticsResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -18,11 +17,10 @@ class ConferenceResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'comment' => $this->comment ?? null,
-            'link' => $this->link,
-            'active' => $this->active,
-            'created_at' => $this->created_at->translatedFormat('d F Y'),
-            'deadline_at' => $this->deadline_at->format('d.m.Y H:i'),
+            'deadline_at' => $this->deadline_at,
             'scheduled_date' => $this->scheduled_date->translatedFormat('d F Y'),
+            'dead' => $this->deadline_at->translatedFormat('d F Y, H:i'),
+            'salons' => $this->salons
         ];
     }
 }
