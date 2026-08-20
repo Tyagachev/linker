@@ -62,8 +62,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/salons', [\App\Http\Controllers\SalonController::class, 'index'])->name('salons.index');
     Route::post('/salons', [\App\Http\Controllers\SalonController::class, 'store'])->name('salons.store');
     Route::get('/salons/create', [\App\Http\Controllers\SalonController::class, 'create'])->name('salons.create');
-    Route::get('/salons/edit', [\App\Http\Controllers\SalonController::class, 'edit'])->name('salons.edit');
-    Route::put('/salons/update', [\App\Http\Controllers\SalonController::class, 'update'])->name('salons.update');
+    Route::get('/salons/{salon}/edit', [\App\Http\Controllers\SalonController::class, 'edit'])->name('salons.edit');
+    Route::put('/salons/{salon}/update', [\App\Http\Controllers\SalonController::class, 'update'])->name('salons.update');
     Route::delete('/salons/{salon}', [\App\Http\Controllers\SalonController::class, 'destroy'])->name('salons.destroy');
     //Route::get('/salons/{salon}', [\App\Http\Controllers\SalonController::class, 'show'])->name('salons.show');
 });

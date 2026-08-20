@@ -4,10 +4,11 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import TextInput from "@/Components/TextInput.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
+import {Link} from "@inertiajs/vue3";
 
 export default {
     name: "Index",
-    components: {SecondaryButton, InputLabel, TextInput, PrimaryButton, UserLayout},
+    components: {SecondaryButton, InputLabel, TextInput, PrimaryButton, UserLayout, Link},
     props: {
         regions: {
             type: Array,
@@ -213,7 +214,7 @@ export default {
 
                     <!-- Удаление -->
                     <div class="flex justify-end">
-
+                        <Link class="rounded-md px-3 py-3 text-sm text-center mx-1 my-2 text-blue-500 hover:text-blue-600  transition hover:bg-blue-200" :href="route('salons.edit', {salon: salon.id})">Редактировать</Link>
                         <button
                             @click.prevent="deleteSalon(salon)"
                             class="rounded-md px-3 py-1.5 text-sm text-red-500 transition hover:bg-red-50 hover:text-red-700"

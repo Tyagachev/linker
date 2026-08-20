@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\SalonResource;
 use App\Models\Region;
 use App\Models\Salon;
 use Illuminate\Http\Request;
@@ -56,17 +57,23 @@ class SalonController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Salon $salon)
     {
-        //
+        $regions = Region::query()->orderBy('created_at', 'desc')->get();
+        $salon = SalonResource::make($salon)->resolve();
+        return Inertia::render('Salon/Edit', compact('regions','salon'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Salon $salon)
     {
-        //
+        $salon->update([
+            'name' => $request->input('name'),
+            'region' => $request->input('region')
+        ]);
+        return redirect()->route('salons.index');
     }
 
     /**
